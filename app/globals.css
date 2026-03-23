@@ -1,31 +1,36 @@
-/* src/app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Pakai variabel CSS biasa biar gak bentrok sama build engine Tailwind */
 :root {
-  background-color: #0a0a0a;
-  color: #ededed;
-  color-scheme: dark;
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --accent: #00ff88;
 }
 
 html {
   scroll-behavior: smooth;
-  font-feature-settings: "ss01", "ss03", "cv01"; /* Optimasi font Geist */
 }
 
 body {
-  @apply antialiased font-sans text-foreground bg-background;
-  /* Efek Grain Halus ala Kalcer */
+  background-color: var(--background);
+  color: var(--foreground);
+  /* Efek Grain Kalcer */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.05' d='M1 3h1v1H1V3zm2-2h1v1H2V1z'%3E%3C/path%3E%3C/svg%3E");
 }
 
-/* Responsif Typography Utilities */
+/* Utilitas Custom */
 @layer utilities {
   .text-kalcer-hero {
-    @apply text-[12vw] sm:text-[10vw] md:text-[8vw] lg:text-[7vw] font-ultra tracking-tighter leading-[0.85];
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 900;
+    line-height: 0.85;
+    letter-spacing: -0.05em;
   }
   .text-kalcer-title {
-    @apply text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-none;
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 900;
+    line-height: 1;
   }
 }
