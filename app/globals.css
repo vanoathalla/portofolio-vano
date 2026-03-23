@@ -1,18 +1,31 @@
+/* src/app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #050505;
-  --foreground: #ffffff;
+  background-color: #0a0a0a;
+  color: #ededed;
+  color-scheme: dark;
 }
 
 html {
   scroll-behavior: smooth;
+  font-feature-settings: "ss01", "ss03", "cv01"; /* Optimasi font Geist */
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: 'Inter', sans-serif; /* Pastikan font ini ada atau ganti sans-serif biasa */
+  @apply antialiased font-sans text-foreground bg-background;
+  /* Efek Grain Halus ala Kalcer */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.05' d='M1 3h1v1H1V3zm2-2h1v1H2V1z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+/* Responsif Typography Utilities */
+@layer utilities {
+  .text-kalcer-hero {
+    @apply text-[12vw] sm:text-[10vw] md:text-[8vw] lg:text-[7vw] font-ultra tracking-tighter leading-[0.85];
+  }
+  .text-kalcer-title {
+    @apply text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-none;
+  }
 }
