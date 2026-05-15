@@ -1,36 +1,227 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* Pakai variabel CSS biasa biar gak bentrok sama build engine Tailwind */
+/* ─── Design Tokens ─────────────────────────────────────────── */
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --accent: #00ff88;
+  --color-base:         #FAFAF7;
+  --color-surface:      #F5F0E8;
+  --color-surface-soft: #F0E8E4;
+  --color-text-primary: #2A2A2A;
+  --color-text-muted:   #7A7570;
+  --color-accent:       #C9A96E;
+  --color-border:       rgba(42, 42, 42, 0.1);
 }
 
+/* ─── Tailwind v4 theme registration ────────────────────────── */
+@theme inline {
+  --color-base:         var(--color-base);
+  --color-surface:      var(--color-surface);
+  --color-surface-soft: var(--color-surface-soft);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-muted:   var(--color-text-muted);
+  --color-accent:       var(--color-accent);
+  --color-border:       var(--color-border);
+  --font-display:       var(--font-playfair), Georgia, serif;
+  --font-sans:          var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ─── Base ──────────────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  /* Efek Grain Kalcer */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.05' d='M1 3h1v1H1V3zm2-2h1v1H2V1z'%3E%3C/path%3E%3C/svg%3E");
+  background-color: var(--color-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  /* Hide cursor on desktop — custom cursor takes over */
+  cursor: none;
+  /* Prevent horizontal overflow */
+  overflow-x: hidden;
 }
 
-/* Utilitas Custom */
-@layer utilities {
-  .text-kalcer-hero {
-    font-size: clamp(3rem, 10vw, 8rem);
-    font-weight: 900;
-    line-height: 0.85;
-    letter-spacing: -0.05em;
-  }
-  .text-kalcer-title {
-    font-size: clamp(2rem, 6vw, 4rem);
-    font-weight: 900;
-    line-height: 1;
-  }
+/* Restore cursor on touch devices */
+@media (hover: none) {
+  body { cursor: auto; }
+  #custom-cursor { display: none; }
 }
+
+/* ─── Focus-visible — accessibility ────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ─── Custom Cursor ─────────────────────────────────────────── */
+#custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--color-accent);
+  border-radius: 50%;
+  background: transparent;
+  pointer-events: none;
+  z-index: 9999;
+  /* position set via JS transform */
+  transform: translate(-50%, -50%);
+  /* size + color transitions only; position handled by rAF lerp */
+  transition:
+    width  0.2s ease,
+    height 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.08s linear;
+  will-change: transform;
+}
+
+#custom-cursor.hovered {
+  width: 24px;
+  height: 24px;
+  border-color: var(--color-text-primary);
+}
+
+/* ─── Fade-up scroll animation ──────────────────────────────── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hero lines animate from 16px instead of 24px */
+.hero-line {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.hero-line.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Project card hover — gold left border height transition ── */
+.project-card {
+  position: relative;
+  transition: transform 0.25s ease;
+}
+
+.project-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  background-color: var(--color-accent);
+  transition: height 0.3s ease, top 0.3s ease;
+}
+
+.project-card:hover::before {
+  height: 100%;
+  top: 0;
+}
+
+.project-card:hover {
+  transform: translateX(4px);
+}
+
+/* ─── Service card hover — left border height transition ───── */
+.service-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  background-color: var(--color-accent);
+  transition: height 0.3s ease, top 0.3s ease;
+}
+
+.service-card:hover::before {
+  height: 100%;
+  top: 0;
+}
+
+/* ─── Marquee ───────────────────────────────────────────────── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: max-content;
+  will-change: transform;
+  animation: marquee 40s linear infinite;
+}
+
+.marquee-wrapper:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* ─── Navbar active link underline transition ───────────────── */
+.nav-link-underline {
+  position: relative;
+  padding-bottom: 3px;
+}
+
+.nav-link-underline::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
+
+.nav-link-underline.active::after {
+  transform: scaleX(1);
+}
+
+/* ─── Mobile drawer link stagger ───────────────────────────── */
+.drawer-link {
+  opacity: 0;
+  transform: translateX(16px);
+  transition: opacity 0.3s ease, transform 0.3s ease, color 0.2s ease;
+}
+
+.drawer-open .drawer-link {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ─── Typography helpers ────────────────────────────────────── */
+.font-display {
+  font-family: var(--font-playfair), Georgia, serif;
+}
+
+/* ─── Selection ─────────────────────────────────────────────── */
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-base);
+}
+
+/* ─── Scrollbar (subtle) ────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--color-base); }
+::-webkit-scrollbar-thumb { background: var(--color-border); }
